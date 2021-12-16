@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled, { css } from 'styled-components/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Header } from '../../components';
+import { setCities, selectCities } from '../../store/Cities.store';
+import { CityItem, Header } from '../../components';
 
 const StyledContainer = styled.View`
   ${({ theme }) => css`
@@ -30,13 +33,43 @@ const StyledEmptySubtitle = styled.Text`
   `}
 `;
 
+export const FlatList = styled.FlatList`
+  margin-top: 16px;
+`;
+
 const Home: React.FC = () => {
+  const dispatch = useDispatch();
+  const { cities } = useSelector(selectCities);
+
+  const getCities = async () => {
+    const storage = await AsyncStorage.getItem('@cities');
+
+    if (storage) {
+      dispatch(setCities(JSON.parse(storage)));
+    }
+  };
+
+  useEffect(() => {
+    getCities();
+  }, [])
+
   return (
     <>
-      <Header/>
+      <Header />
       <StyledContainer>
-        <StyledEmptyTitle>Parece que você ainda não adicionou uma cidade</StyledEmptyTitle>
-        <StyledEmptySubtitle>Tente adicionar uma cidade usando o botão de busca</StyledEmptySubtitle>
+        {cities.length === 0 ?
+          <>
+            <StyledEmptyTitle>Parece que você ainda não adicionou uma cidade</StyledEmptyTitle>
+            <StyledEmptySubtitle>Tente adicionar uma cidade usando o botão de busca</StyledEmptySubtitle>
+          </> :
+          <FlatList
+            data={cities}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => (
+              <CityItem city={item} />
+            )}
+          />
+        }
       </StyledContainer>
     </>
   );
