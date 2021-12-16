@@ -19,6 +19,7 @@ export default {
     h3: '16px',
     h4: '14px',
     h5: '12px',
-    title: '20px'
+    title: '20px',
+    city: '24px'
   }
 } as const;

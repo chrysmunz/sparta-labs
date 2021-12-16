@@ -1,4 +1,5 @@
 import React from 'react';
+import { TextInputProps } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled, { css } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -6,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { theme as currentTheme } from '../../styles/theme';
 
 type Status = 'default' | 'search';
-interface HeaderProps {
+interface HeaderProps extends TextInputProps {
   status?: Status;
 }
 
@@ -45,7 +46,12 @@ const StyledTitle = styled.Text`
 
 const Button = styled.TouchableOpacity``;
 
-const Header: React.ElementType<HeaderProps> = ({ status }: HeaderProps) => {
+const Header: React.ElementType<HeaderProps> = ({
+  status,
+  value,
+  onChangeText,
+  onSubmitEditing
+}: HeaderProps) => {
   const navigation = useNavigation();
 
   return (
@@ -61,7 +67,12 @@ const Header: React.ElementType<HeaderProps> = ({ status }: HeaderProps) => {
           <Button onPress={() => navigation.navigate('Home')}>
             <Icon name='times' color={currentTheme.color.white} size={17.5} />
           </Button>
-          <StyledInput placeholder='Digite o nome da cidade' />
+          <StyledInput
+            value={value}
+            placeholder='Digite o nome da cidade'
+            onChangeText={onChangeText}
+            onSubmitEditing={onSubmitEditing}
+          />
         </>
       }
     </StyledContainer>
