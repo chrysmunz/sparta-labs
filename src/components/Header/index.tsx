@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import styled, { css } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -45,17 +46,19 @@ const StyledTitle = styled.Text`
 const Button = styled.TouchableOpacity``;
 
 const Header: React.ElementType<HeaderProps> = ({ status }: HeaderProps) => {
+  const navigation = useNavigation();
+
   return (
     <StyledContainer status={status}>
       {status === 'default' ?
         <>
           <StyledTitle>Cidades</StyledTitle>
-          <Button>
+          <Button onPress={() => navigation.navigate('Search')}>
             <Icon name='search' color={currentTheme.color.white} size={17.5} />
           </Button>
         </> :
         <>
-          <Button>
+          <Button onPress={() => navigation.navigate('Home')}>
             <Icon name='times' color={currentTheme.color.white} size={17.5} />
           </Button>
           <StyledInput placeholder='Digite o nome da cidade' />
