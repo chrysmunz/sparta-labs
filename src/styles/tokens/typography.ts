@@ -19,6 +19,6 @@ export default {
     h3: '16px',
     h4: '14px',
     h5: '12px',
-    emptyTitle: '20px'
+    title: '20px'
   }
 } as const;

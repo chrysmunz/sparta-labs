@@ -1,6 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components/native';
 
+import { Header } from '../../components';
+
 const StyledContainer = styled.View`
   ${({ theme }) => css`
     background-color: ${theme.color.gray.secondary}
@@ -11,7 +13,7 @@ const StyledContainer = styled.View`
 const StyledEmptyTitle = styled.Text`
   ${({ theme }) => css`
     font-weight: ${theme.typography.weight.medium};
-    font-size: ${theme.typography.size.emptyTitle};
+    font-size: ${theme.typography.size.title};
     text-align: center;
     margin-top: 62px;
     color: ${theme.color.black};
@@ -30,10 +32,13 @@ const StyledEmptySubtitle = styled.Text`
 
 const Home: React.FC = () => {
   return (
-    <StyledContainer>
-      <StyledEmptyTitle>Parece que você ainda não adicionou uma cidade</StyledEmptyTitle>
-      <StyledEmptySubtitle>Tente adicionar uma cidade usando o botão de busca</StyledEmptySubtitle>
-    </StyledContainer>
+    <>
+      <Header/>
+      <StyledContainer>
+        <StyledEmptyTitle>Parece que você ainda não adicionou uma cidade</StyledEmptyTitle>
+        <StyledEmptySubtitle>Tente adicionar uma cidade usando o botão de busca</StyledEmptySubtitle>
+      </StyledContainer>
+    </>
   );
 };
 
