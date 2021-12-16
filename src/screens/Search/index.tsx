@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { getWeather, selectWeather } from '../../store/Weather.store';
+import { getCity, selectWeather } from '../../store/Weather.store';
 import { Header } from '../../components';
 
 const StyledContainer = styled.View`
@@ -19,14 +19,14 @@ const StyledResultItem = styled.View`
     background-color: ${theme.color.white}
     height: 130px;
     padding: 16px;
-    border-width: 1;
-    border-radius: 2;
+    border-width: 1px;
+    border-radius: 2px;
     border-color: ${theme.color.gray.tertiary};
     shadow-color: ${theme.color.black};
-    shadow-offset: { width: 0, height: 2 };
-    shadow-opacity: 0.8;
-    shadow-radius: 2;
-    elevation: 1;
+    shadow-offset: { width: 0px, height: 2px };
+    shadow-opacity: 0.8px;
+    shadow-radius: 2px;
+    elevation: 1px;
   `}
 `;
 
@@ -62,7 +62,7 @@ const Search: React.FC = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState('');
 
-  const { weather, isFetching } = useSelector(selectWeather);
+  const { city, isFetching } = useSelector(selectWeather);
 
   return (
     <>
@@ -70,18 +70,19 @@ const Search: React.FC = () => {
         status='search'
         value={value}
         onChangeText={text => setValue(text)}
-        onSubmitEditing={() => dispatch(getWeather({ city: value }))}
+        onSubmitEditing={() => dispatch(getCity({ city: value }))}
       />
       <StyledContainer>
-        {weather && !isFetching ?
+        {city && !isFetching &&
           <StyledResultItem>
-            <StyledCity>{weather.name}</StyledCity>
+            <StyledCity>{city.name}</StyledCity>
             <StyledCountry>Brasil</StyledCountry>
             <Button>
               <StyledButtonTitle>ADICIONAR</StyledButtonTitle>
             </Button>
           </StyledResultItem>
-          : <ActivityIndicator size="large" />}
+        }
+        {isFetching && <ActivityIndicator size="large" />}
       </StyledContainer>
     </>
   );

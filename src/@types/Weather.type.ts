@@ -1,46 +1,38 @@
-type Weathers = {
-  description: string,
-  icon: string,
-  id: number,
-  main: string
-};
-
 interface Weather {
-  id: number,
-  base: string,
+  dt: number,
+  main: {
+    temp: number,
+    feels_like: number,
+    temp_min: number,
+    temp_max: number,
+    pressure: number,
+    sea_level: number,
+    grnd_level: number,
+    humidity: number,
+    temp_kf: number
+  },
+  weather: [
+    {
+      id: number,
+      main: string,
+      description: string,
+      icon: string
+    }
+  ],
   clouds: {
     all: number
   },
-  cod: number,
-  coord: {
-    lat: number,
-    lon: number
-  },
-  dt: number,
-  main: {
-    feels_like: number,
-    grnd_level: number,
-    humidity: number,
-    pressure: number,
-    sea_level: number,
-    temp: number,
-    max: number,
-    min: number
-  },
-  name: string,
-  sys: {
-    country: string,
-    sunrise: number,
-    sunset: number
-  },
-  timezone: number,
-  visibility: number,
-  weather: Weathers[],
   wind: {
+    speed: number,
     deg: number,
-    gust: number,
-    speed: number
-  }
-}
+    gust: number
+  },
+  visibility: number,
+  pop: number,
+  sys: {
+    pod: string
+  },
+  dt_txt: string
+};
 
 export default Weather;
