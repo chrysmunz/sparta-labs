@@ -20,6 +20,7 @@ export default {
     h4: '14px',
     h5: '12px',
     title: '20px',
-    city: '24px'
+    city: '24px',
+    temperature: '34px'
   }
 } as const;

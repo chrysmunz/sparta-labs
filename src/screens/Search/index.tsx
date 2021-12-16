@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { getCity, selectWeather } from '../../store/Weather.store';
+import { add } from '../../store/Cities.store';
+import { getCity, clearState, selectWeather } from '../../store/Weather.store';
 import { Header } from '../../components';
 
 const StyledContainer = styled.View`
@@ -23,10 +25,9 @@ const StyledResultItem = styled.View`
     border-radius: 2px;
     border-color: ${theme.color.gray.tertiary};
     shadow-color: ${theme.color.black};
-    shadow-offset: { width: 0px, height: 2px };
-    shadow-opacity: 0.8px;
+    shadow-opacity: 0.8;
     shadow-radius: 2px;
-    elevation: 1px;
+    elevation: 1;
   `}
 `;
 
@@ -60,6 +61,7 @@ const Button = styled.TouchableOpacity``;
 
 const Search: React.FC = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [value, setValue] = useState('');
 
   const { city, isFetching } = useSelector(selectWeather);
@@ -77,7 +79,11 @@ const Search: React.FC = () => {
           <StyledResultItem>
             <StyledCity>{city.name}</StyledCity>
             <StyledCountry>Brasil</StyledCountry>
-            <Button>
+            <Button onPress={() => {
+              dispatch(add({ city }));
+              dispatch(clearState());
+              navigation.navigate('Home');
+            }}>
               <StyledButtonTitle>ADICIONAR</StyledButtonTitle>
             </Button>
           </StyledResultItem>
