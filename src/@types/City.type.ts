@@ -1,7 +1,6 @@
 interface City {
   id: number,
-  name: string,
-  timezone: number,
+  name: string
 }
 
 export default City;

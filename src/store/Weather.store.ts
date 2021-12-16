@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '.';
-import { City, Weather } from '../@types';
+import { City, Forecast, Weather } from '../@types';
 import { API_KEY, CNT } from '../config/constants';
 import api from '../services/api';
 
 type WeatherSlice = {
   city: City;
-  weather: Weather[];
+  weather: Weather;
+  forecast: Forecast[]
   errorMessage: string;
   isFetching: boolean;
   isSuccess: boolean;
@@ -30,15 +31,15 @@ const getCity = createAsyncThunk(
   }
 );
 
-const getWeather = createAsyncThunk(
-  'Weather/getWeather',
+const getForecast = createAsyncThunk(
+  'Weather/getForecast',
   async (params: { city?: string }, thunkAPI) => {
     const { city } = params;
 
     try {
       const { data } = await api.get(`forecast?q=${city}&cnt=${CNT}&appid=${API_KEY}`);
 
-      return { weather: data.list };
+      return { forecast: data.list };
     } catch (e: any) {
       console.log(e);
       return thunkAPI.rejectWithValue(e.response.data);
@@ -50,13 +51,18 @@ const weatherSlice = createSlice({
   name: 'WeatherType',
   initialState: {
     city: null,
-    weather: [],
+    weather: null,
+    forecast: [],
     errorMessage: '',
     isFetching: false,
     isSuccess: false,
     isError: false
   } as WeatherSlice,
-  reducers: {},
+  reducers: {
+    clearState: (state: WeatherSlice) => {
+      state.city = null;
+    }
+  },
   extraReducers: {
     [getCity.pending]: (state: WeatherSlice) => {
       state.isFetching = true;
@@ -64,22 +70,22 @@ const weatherSlice = createSlice({
     [getCity.fulfilled]: (state: WeatherSlice, { payload }) => {
       state.isFetching = false;
       state.isSuccess = true;
-      state.city = payload.city;
+      state.city = { id: payload.city.id, name: payload.city.name};
     },
     [getCity.rejected]: (state: WeatherSlice, { payload }) => {
       state.isFetching = false;
       state.isError = true;
       state.errorMessage = payload.message;
     },
-    [getWeather.pending]: (state: WeatherSlice) => {
+    [getForecast.pending]: (state: WeatherSlice) => {
       state.isFetching = true;
     },
-    [getWeather.fulfilled]: (state: WeatherSlice, { payload }) => {
+    [getForecast.fulfilled]: (state: WeatherSlice, { payload }) => {
       state.isFetching = false;
       state.isSuccess = true;
-      state.weather = payload.weather;
+      state.forecast = payload.forecast;
     },
-    [getWeather.rejected]: (state: WeatherSlice, { payload }) => {
+    [getForecast.rejected]: (state: WeatherSlice, { payload }) => {
       state.isFetching = false;
       state.isError = true;
       state.errorMessage = payload.message;
@@ -87,7 +93,9 @@ const weatherSlice = createSlice({
   }
 });
 
+export const { clearState } = weatherSlice.actions;
+
 const selectWeather = (state: RootState): WeatherSlice => state.weather;
 
-export { getCity, getWeather, selectWeather };
+export { getCity, getForecast, selectWeather };
 export default weatherSlice.reducer;
