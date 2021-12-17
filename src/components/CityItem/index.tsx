@@ -4,11 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import styled, { css } from 'styled-components/native';
 
 import { getCurrentWeather } from '../../services/api';
-
-type City = {
-  id: number;
-  name: string
-}
+import { City } from '../../@types';
 
 interface CityItemProps extends TouchableOpacity {
   city: City;
@@ -79,24 +75,18 @@ const StyledDescription = styled.Text`
   `}
 `;
 
-const StyledDetails = styled.View`
-
-`;
+const StyledDetails = styled.View``;
 
 const CityItem: React.ElementType<CityItemProps> = ({ city }: CityItemProps) => {
   const navigation = useNavigation();
-  const [currentWeather, setCurrentWeather] = useState('');
-  const [description, setDescription] = useState('');
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(0);
+  const [data, setData] = useState({ daily: [], current: { temp: 0, weather: { description: '' } } });
+  const [loading, setLoading] = useState(true);
 
   const getWeather = async () => {
-    const weather = await getCurrentWeather(city.name);
-
-    setMin(weather.main.temp_min - 273.15);
-    setMax(weather.main.temp_max - 273.15);
-    setDescription(weather.weather[0].description);
-    setCurrentWeather((weather.main.temp - 273.15).toFixed(0));
+    setLoading(true);
+    const weather = await getCurrentWeather({ lat: city.lat, lon: city.lon });
+    setData(weather);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -104,17 +94,19 @@ const CityItem: React.ElementType<CityItemProps> = ({ city }: CityItemProps) => 
   }, [])
 
   return (
-    <StyledContainer>
+    <StyledContainer onPress={() => navigation.navigate('Details', { data, city })}>
       <StyledHeader>
         <StyledDetails>
           <StyledCity>{city.name}</StyledCity>
           <StyledCountry>Brasil</StyledCountry>
         </StyledDetails>
-        <StyledTemperature>{currentWeather}º</StyledTemperature>
+        <StyledTemperature>{!loading ? `${data.current.temp.toFixed(0)}º` : null}</StyledTemperature>
       </StyledHeader>
       <StyledDetails>
-          <StyledDescription>{description}</StyledDescription>
-          <StyledTemperatures>{min.toFixed(0)}º - {max.toFixed(0)}º</StyledTemperatures>
+          <StyledDescription>{!loading ? data.current.weather[0].description : null}</StyledDescription>
+          <StyledTemperatures>
+            {!loading ? `${data.daily[0].temp.min.toFixed(0)}º - ${data.daily[0].temp.max.toFixed(0)}º` : null}
+          </StyledTemperatures>
         </StyledDetails>
     </StyledContainer>
   );
