@@ -6,9 +6,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { theme as currentTheme } from '../../styles/theme';
 
-type Status = 'default' | 'search';
+type Status = 'default' | 'search' | 'details';
 interface HeaderProps extends TextInputProps {
   status?: Status;
+  title?: string;
 }
 
 const StyledContainer = styled.View<HeaderProps>`
@@ -24,7 +25,7 @@ const StyledContainer = styled.View<HeaderProps>`
 `;
 
 const StyledInput = styled.TextInput.attrs({
-  placeholderTextColor: '#00FFFFFF' 
+  placeholderTextColor: '#00FFFFFF'
 })`
   ${({ theme }) => css`
     width: 256px;
@@ -37,46 +38,66 @@ const StyledInput = styled.TextInput.attrs({
 `;
 
 const StyledTitle = styled.Text`
-  ${({ theme }) => css`
+  ${({ theme, status }) => css`
     font-weight: ${theme.typography.weight.medium};
     font-size: ${theme.typography.size.title};
     color: ${theme.color.white};
+    text-align: center;
+    margin-left: ${status === 'details' ? '40px' : '0px'}
   `}
 `;
 
-const Button = styled.TouchableOpacity``;
+const Button = styled.TouchableOpacity`
+  justify-content: center;
+`;
 
 const Header: React.ElementType<HeaderProps> = ({
-  status,
+  title,
   value,
+  status,
   onChangeText,
   onSubmitEditing
 }: HeaderProps) => {
   const navigation = useNavigation();
 
-  return (
-    <StyledContainer status={status}>
-      {status === 'default' ?
-        <>
-          <StyledTitle>Cidades</StyledTitle>
-          <Button onPress={() => navigation.navigate('Search')}>
-            <Icon name='search' color={currentTheme.color.white} size={17.5} />
-          </Button>
-        </> :
-        <>
-          <Button onPress={() => navigation.navigate('Home')}>
-            <Icon name='times' color={currentTheme.color.white} size={17.5} />
-          </Button>
-          <StyledInput
-            value={value}
-            placeholder='Digite o nome da cidade'
-            onChangeText={onChangeText}
-            onSubmitEditing={onSubmitEditing}
-          />
-        </>
-      }
+  if (status === 'default') {
+    return (
+      <StyledContainer status={status}>
+        <StyledTitle>Cidades</StyledTitle>
+        <Button onPress={() => navigation.navigate('Search')}>
+          <Icon name='plus' color={currentTheme.color.white} size={20} />
+        </Button>
+      </StyledContainer>
+    );
+  }
+
+  if (status === 'search') {
+    return (
+      <StyledContainer>
+        <Button onPress={() => navigation.goBack()}>
+          <Icon name='chevron-left' color={currentTheme.color.white} size={20} />
+        </Button>
+        <StyledInput
+          value={value}
+          placeholder='Digite o nome da cidade'
+          autoCapitalize='words'
+          onChangeText={onChangeText}
+          onSubmitEditing={onSubmitEditing}
+        />
+      </StyledContainer>
+    );
+  }
+
+  if (status === 'details') {
+    return (
+      <StyledContainer>
+      <Button onPress={() => navigation.goBack()}>
+        <Icon name='chevron-left' color={currentTheme.color.white} size={20} />
+      </Button>
+      <StyledTitle status={status}>{title}</StyledTitle>
     </StyledContainer>
-  );
+    );
+  }
 };
 
 Header.defaultProps = {
