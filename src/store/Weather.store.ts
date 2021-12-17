@@ -45,9 +45,6 @@ const getForecast = createAsyncThunk(
         &exclude=minutely,hourly,alerts
         &appid=${API_KEY}`
       );
-      
-      console.log(data);
-
       return { forecast: data.list };
     } catch (e: any) {
       console.log(e);

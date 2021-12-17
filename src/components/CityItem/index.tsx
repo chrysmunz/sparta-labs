@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import styled, { css } from 'styled-components/native';
 
+import { fav } from '../../store/Cities.store';
 import { getCurrentWeather } from '../../services/api';
 import { City } from '../../@types';
 
@@ -75,9 +77,17 @@ const StyledDescription = styled.Text`
   `}
 `;
 
+const StyledImage = styled.Image`
+  width: 48px;
+  height: 48px;
+`;
+
+const Button = styled.TouchableOpacity``;
+
 const StyledDetails = styled.View``;
 
 const CityItem: React.ElementType<CityItemProps> = ({ city }: CityItemProps) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [data, setData] = useState({ daily: [], current: { temp: 0, weather: { description: '' } } });
   const [loading, setLoading] = useState(true);
@@ -102,12 +112,17 @@ const CityItem: React.ElementType<CityItemProps> = ({ city }: CityItemProps) => 
         </StyledDetails>
         <StyledTemperature>{!loading ? `${data.current.temp.toFixed(0)}º` : null}</StyledTemperature>
       </StyledHeader>
-      <StyledDetails>
+      <StyledHeader>
+        <StyledDetails>
           <StyledDescription>{!loading ? data.current.weather[0].description : null}</StyledDescription>
           <StyledTemperatures>
             {!loading ? `${data.daily[0].temp.min.toFixed(0)}º - ${data.daily[0].temp.max.toFixed(0)}º` : null}
           </StyledTemperatures>
         </StyledDetails>
+        <Button onPress={() => dispatch(fav({ city }))}>
+          <StyledImage source={city.fav ? require('../../assets/images/enabled.png') : require('../../assets/images/disabled.png')} />
+        </Button>
+      </StyledHeader>
     </StyledContainer>
   );
 };

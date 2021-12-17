@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import styled, { css } from 'styled-components/native';
-import moment from 'moment';
 
 import { Header } from '../../components';
 import { getNameDay, getDayMonth } from '../../utils/date';
@@ -89,13 +88,9 @@ const Details: React.FC = () => {
   const routes = useRoute();
   const { data, city } = routes.params;
 
-  useEffect(() => {
-    console.log(moment(new Date()).format('mm'));
-  }, []);
-
   return (
     <>
-      <Header status='details' title={city.name} />
+      <Header status='details' title={city.name} id={city.id} />
       <StyledContainer>
         <FlatList
           data={data.daily}

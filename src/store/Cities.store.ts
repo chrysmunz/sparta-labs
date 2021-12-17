@@ -48,12 +48,16 @@ const cartSlice = createSlice({
       state.cities = newState;
 
       AsyncStorage.setItem('@cities', JSON.stringify(state.cities));
-    }
+    },
+    fav: (state: CitiesSlice, { payload }) => {
+      const index = state.cities.map(item => { return item.id; }).indexOf(payload.city.id);
+      state.cities[index].fav = !state.cities[index].fav;
+    },
   },
   extraReducers: {}
 });
 
-export const { add, remove, clearState, setCities } = cartSlice.actions;
+export const { add, remove, clearState, setCities, fav } = cartSlice.actions;
 
 const selectCities = (state: RootState): CitiesSlice => state.cities;
 
