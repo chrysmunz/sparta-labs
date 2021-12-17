@@ -6,6 +6,8 @@ import { RootState } from '.';
 type City = {
   id: number,
   name: string,
+  lat: number,
+  lon: number;
   fav: boolean
 }
 
@@ -33,6 +35,8 @@ const cartSlice = createSlice({
         state.cities = [...state.cities, {
           id: payload.city.id,
           name: payload.city.name,
+          lat: payload.city.lat,
+          lon: payload.city.lon,
           fav: false
         }];
       }

@@ -8,6 +8,7 @@ import { CityItem, Header } from '../../components';
 
 const StyledContainer = styled.View`
   ${({ theme }) => css`
+    flex: 1;
     background-color: ${theme.color.gray.secondary}
     padding-horizontal: 16px;
   `}

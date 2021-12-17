@@ -21,7 +21,7 @@ const getCity = createAsyncThunk(
     const { city } = params;
 
     try {
-      const { data } = await api.get(`weather?q=${city}&appid=${API_KEY}`);
+      const { data } = await api.get(`weather?q=${city}&units=metric&appid=${API_KEY}`);
 
       return { city: data };
     } catch (e: any) {
@@ -33,11 +33,20 @@ const getCity = createAsyncThunk(
 
 const getForecast = createAsyncThunk(
   'Weather/getForecast',
-  async (params: { city?: string }, thunkAPI) => {
-    const { city } = params;
+  async (params: { lat: number, lon: number }, thunkAPI) => {
+    const { lat, lon } = params;
 
     try {
-      const { data } = await api.get(`forecast?q=${city}&cnt=${CNT}&appid=${API_KEY}`);
+      const { data } = await api.get(`onecall?
+        lang=pt
+        &units=metric
+        &lat=${lat}
+        &lon=${lon}
+        &exclude=minutely,hourly,alerts
+        &appid=${API_KEY}`
+      );
+      
+      console.log(data);
 
       return { forecast: data.list };
     } catch (e: any) {
@@ -70,7 +79,12 @@ const weatherSlice = createSlice({
     [getCity.fulfilled]: (state: WeatherSlice, { payload }) => {
       state.isFetching = false;
       state.isSuccess = true;
-      state.city = { id: payload.city.id, name: payload.city.name};
+      state.city = {
+        id: payload.city.id, 
+        name: payload.city.name,
+        lat: payload.city.coord.lat,
+        lon: payload.city.coord.lon
+      };
     },
     [getCity.rejected]: (state: WeatherSlice, { payload }) => {
       state.isFetching = false;
